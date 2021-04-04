@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Basic init script, this will work for now till I replace this.
+
+# initialize script
+cd "$(dirname $0)/../"
+
+echo "Copying deployment to root..."
+
+cp ./manifest/deploy/ ./ -rpv
+
+echo "Setting Permissions..."
+
+chmod 600 ./conf.d/traefik/htpasswd
+
+echo "done"
