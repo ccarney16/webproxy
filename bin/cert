@@ -62,19 +62,12 @@ function _command_deploy {
         exit 5
     fi
 
-    if [[ -z $entrypoint ]]; then
-        echo "No entrypoint provided"
-        exit
-    fi
-
     # Get proper name for the certificate
     local cert_name=$(echo $ssl_info | grep "Certificate Name" | sed -e 's/Certificate Name: //g' )
 
-    $_COMPOSE_EXE \
-    run --rm proxy sh -c \
-    "echo '[[tls.certificates]]
+    echo '[[tls.certificates]]
         certFile = \"/data/letsencrypt/live/${cert_name}/fullchain.pem\"
-        keyFile = \"/data/letsencrypt/live/${cert_name}/privkey.pem\"' > /etc/traefik/traefik.d/50-${cert_name}.${entrypoint}.tls.toml"
+        keyFile = \"/data/letsencrypt/live/${cert_name}/privkey.pem\"' > ./conf.d/traefik/traefik.d/50-${cert_name}.tls.toml
     echo "Config for '${cert_name}' deployed"
 }
 
@@ -86,18 +79,12 @@ function _command_destroy {
         exit
     fi
 
-    if [[ -z $entrypoint ]]; then
-        echo "No entrypoint provided"
-        exit
-    fi
-
     # Get proper name for the certificate
     local cert_name=$(printf $ssl_info | grep "Certificate Name" | sed 's/Certificate Name: //g;')
 
-    $_COMPOSE_EXE \
-    run --rm proxy ash -c \
-    "rm -f /data/config/50-${cert_name}.${entrypoint}.tls.toml"
+    rm -f ./conf.d/traefik/traefik.d/50-${cert_name}.tls.toml
     echo "Config for '${cert_name}' destroyed"
+
 }
 
 ### END FUNCTIONS ###
