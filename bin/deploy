@@ -7,7 +7,7 @@ cd "$(dirname $0)/../"
 
 echo "Copying deployment to root..."
 
-cp ./manifest/deploy/ ./ -rpv
+cp ./manifest/deploy/* ./ -rpv
 
 echo "Setting Permissions..."
 
