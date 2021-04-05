@@ -1,13 +1,24 @@
 server {
-    listen       80;
-    listen  [::]:80;
-    server_name  localhost;
+    listen 80;
+    listen [::]:80;
+    server_name default;
+    location / {
+        root /app/default;
+        index index.html;
+    }
+}
+
+server {
+    listen       80 default;
+    listen  [::]:80 default;
 
     #charset koi8-r;
     #access_log  /var/log/nginx/host.access.log  main;
 
-    location / {
-        root   /app/;
-        index  index.html;
+    error_page 404 = /404;
+
+    location ~ "^/([0-9]{3})$" {
+        root /app/error;
+        try_files $uri $uri.html =404;
     }
 }

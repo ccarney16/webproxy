@@ -12,8 +12,8 @@ services:
       --entrypoints.http.http.redirections.entryPoint.permanent=true
       --entrypoints.http.http.redirections.entryPoint.priority=500
       --entrypoints.https.address=:443
-      --entrypoints.https.http.middlewares=service_error@docker
       --entrypoints.https.http.tls=true
+      --entrypoints.https.http.middlewares=service_error@docker
 
       --providers.docker
       --providers.docker.exposedbydefault=false
@@ -42,6 +42,11 @@ services:
     - traefik.http.routers.api.service=api@internal
     - traefik.http.routers.api.middlewares=api-auth,client_error
     
+    # Default Host for traefik.
+    - traefik.http.routers.default.rule=Host(`${HOSTNAME}`) && PathPrefix(`/`)
+    - traefik.http.routers.default.priority=2
+    - traefik.http.routers.default.middlewares=client_error,default_host_header
+
     # Catch-all for all traffic
     - traefik.http.routers.fallback.rule=PathPrefix(`/`)
     - traefik.http.routers.fallback.priority=1
@@ -52,15 +57,18 @@ services:
     # Error Handling
     - traefik.http.middlewares.client_error.errors.status=400-499
     - traefik.http.middlewares.client_error.errors.service=fallback
-    - traefik.http.middlewares.client_error.errors.query=/error/{status}.html
+    - traefik.http.middlewares.client_error.errors.query=/{status}
     - traefik.http.middlewares.service_error.errors.status=500-599
     - traefik.http.middlewares.service_error.errors.service=fallback
-    - traefik.http.middlewares.service_error.errors.query=/error/{status}.html
+    - traefik.http.middlewares.service_error.errors.query=/{status}
 
     # API Authentication
     - traefik.http.middlewares.api-auth.basicauth.usersfile=/etc/traefik/htpasswd
     - traefik.http.middlewares.redirect_https.redirectscheme.scheme=https
     - traefik.http.middlewares.redirect_https.redirectscheme.permanent=true
+
+    # Change Host header to fallback
+    - traefik.http.middlewares.default_host_header.headers.customrequestheaders.Host=default
     restart: always
   certbot:
     command: renew
