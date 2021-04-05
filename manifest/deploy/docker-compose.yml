@@ -34,7 +34,6 @@ services:
   fallback:
     build:
       context: ./manifest/images/fallback
-    image: localhost/ccarney/fallback:latest
     labels:
     - traefik.enable=true
 
