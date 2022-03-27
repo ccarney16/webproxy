@@ -5,12 +5,15 @@
 # initialize script
 cd "$(dirname $0)/../"
 
-echo "Copying deployment to root..."
+echo "Copying deployment to project root..."
 
-cp ./manifest/deploy/* ./ -rpv
+mkdir conf.d/
+cp -rv ./manifest/config/* ./conf.d/
+cp -v ./manifest/compose/docker-compose.yml ./
 
 echo "Setting Permissions..."
 
-chmod 600 ./conf.d/traefik/htpasswd
+chmod 700 ./conf.d/
+chmod 600 ./conf.d/traefik/api.auth ./conf.d/traefik/certs/acme/letsencrypt.json
 
 echo "done"
