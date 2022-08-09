@@ -1,0 +1,38 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+api:
+  dashboard: true
+certificateResolvers:
+  letsencrypt:
+    acme:
+      email: admin@example.com
+      storage: /etc/traefik/certs/acme/letsencrypt.json
+      httpChallenge:
+        entryPoint: http
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          permanent: true
+          priority: 500
+          scheme: https
+          to: https
+  https:
+    address: ":443"
+    forwardedHeaders:
+      insecure: false
+    http:
+      tls: true
+pilot:
+  dashboard: false
+providers:
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    exposedByDefault: false
+    network: webproxy_nw
+  file:
+    directory: /etc/traefik/file.d
+    watch: true

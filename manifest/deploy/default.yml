@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  traefik:
+    depends_on:
+    - fallback
+    hostname: ${HOSTNAME:-localhost}
+    image: docker.io/library/traefik:${TRAEFIK_VERSION:-latest}
+    privileged: true
+    read_only: true
+    restart: always
+    volumes:
+    - ./conf.d/traefik:/etc/traefik
+    - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+  fallback:
+    image: docker.io/library/nginx:alpine
+    hostname: ${HOSTNAME:-localhost}
+    restart: always
+    volumes:
+    - ./conf.d/fallback/templates:/etc/nginx/templates:ro
+    - ./data/www:/var/www:ro
+networks:
+  default:
+    name: webproxy_nw

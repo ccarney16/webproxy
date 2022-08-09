@@ -1,0 +1,34 @@
+http:
+  routers:
+    api:
+      middlewares:
+      - api_auth
+      rule: Host(`{{env "HOSTNAME"}}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      service: api@internal
+    fallback:
+      priority: 1
+      rule: PathPrefix(`/`)
+      service: fallback
+#      tls:
+#        certResolver: letsencrypt
+#        domains:
+#        - main: "{{env "HOSTNAME"}}"
+  services:
+    fallback:
+      loadBalancer:
+        servers:
+        - url: http://fallback/
+  middlewares:
+    api_auth:
+      basicAuth:
+        usersfile: /etc/traefik/api.auth
+    client_error:
+      errors:
+        status: 400-499
+        service: fallback
+        query: /error/{status}
+    service_error:
+      errors:
+        status: 500-599
+        service: fallback
+        query: /error/{status}

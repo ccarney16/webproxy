@@ -1,0 +1,22 @@
+# This is the default server.
+# This will display a basic message that everything has been configured.
+# This is used to return basic error messages on behalf of traefik.
+server {
+    listen 80       default;
+    listen [::]:80  default;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    error_page 404 = /404;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location ~ "^/([0-9]{3})$" {
+        root /var/www/error;
+        try_files $uri $uri.html =404;
+    }
+}
