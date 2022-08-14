@@ -3,7 +3,7 @@ global:
   sendAnonymousUsage: false
 api:
   dashboard: true
-certificateResolvers:
+certificatesResolvers:
   letsencrypt:
     acme:
       email: admin@example.com
