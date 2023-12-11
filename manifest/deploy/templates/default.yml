@@ -16,7 +16,7 @@ services:
     hostname: ${HOSTNAME:-localhost}
     restart: always
     volumes:
-    - ./conf.d/fallback/templates:/etc/nginx/templates:ro
+    - ./conf.d/nginx/templates:/etc/nginx/templates:ro
     - ./data/www:/var/www:ro
 networks:
   default:
