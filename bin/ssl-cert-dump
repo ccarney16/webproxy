@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Copyright (c) 2017 Brian 'redbeard' Harrington <redbeard@dead-city.org>
 #
 # dumpcerts.sh - A simple utility to explode a Traefik acme.json file into a
